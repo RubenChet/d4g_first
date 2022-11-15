@@ -34,7 +34,7 @@ export default {
       this.$root.$emit("Home.ChangePage", domaine);
     },
   },
-  mounted() {
+  created() {
     let jsonData = json_file.filter((e) => e["incontournables"] == "INCONTOURNABLE");
     for (let item of jsonData) {
       this.$cart.push(item);

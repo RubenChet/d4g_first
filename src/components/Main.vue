@@ -42,12 +42,20 @@
                 </vs-tr>
               </template>
               <template #tbody>
-                <vs-tr v-for="(tr, i) in dfile" v-bind:key="i">
+                <vs-tr
+                  v-for="(tr, i) in dfile"
+                  v-bind:key="i"
+                  @click="
+                    (active_domain_cart = true),
+                      (cart_domain_click = content[i]),
+                      (thedomain = tr.Domaine)
+                  "
+                >
                   <vs-td>
                     {{ tr.Domaine }}
                   </vs-td>
                   <vs-td> {{ content[i].length }} </vs-td>
-                  <template #expand>
+                  <!-- <template #expand>
                     <div class="con-content">
                       <div
                         v-for="(item, idx) in content[i]"
@@ -69,12 +77,40 @@
                         </div>
                       </div>
                     </div>
-                  </template>
+                  </template> -->
                 </vs-tr>
               </template>
             </vs-table>
           </div>
         </template>
+      </vs-dialog>
+    </div>
+    <div class="cart_domain">
+      <vs-dialog blur width="1000px" v-model="active_domain_cart">
+        <div class="content-center">
+          <h4>{{thedomain}}</h4>
+          <div class="table">
+            <div
+              v-for="(item, idx) in cart_domain_click"
+              v-bind:key="idx"
+              class="table-content"
+            >
+              <span>{{ item.ID }}</span>
+              <span>{{ item[["Planet"]] }}</span>
+              <span>{{ item[["Planet"]] }}</span>
+              <span>{{ item[["Planet"]] }}</span>
+              <vs-button
+                class="suppr"
+                danger
+                @click="
+                  remove_from_cart(cart_domain_click[idx]), DomainValues(), active_domain_cart = false
+                "
+              >
+                <i class="pi pi-times-circle"></i>
+              </vs-button>
+            </div>
+          </div>
+        </div>
       </vs-dialog>
     </div>
     <div class="popup">
@@ -142,7 +178,7 @@
         </div>
       </vs-dialog>
     </div>
-    <div class="popup2">
+    <div class="export">
       <vs-dialog blur width="1000px" not-center v-model="allCheck">
         <h4 class="not-margin">
           Le ficher va être sauvegardé en XLS (Ouvrable sur EXCEL) il ce peut
@@ -241,6 +277,7 @@ export default {
     number: 1,
     active_card: false,
     active_cart: false,
+    active_domain_cart: false,
     card_data: [],
     content: [],
     counter: 0,
@@ -250,6 +287,8 @@ export default {
     isShow: true,
     list: [],
     card_pop: [],
+    cart_domain_click: [],
+    thedomain: "",
 
     editActive: false,
     edit: null,
@@ -313,7 +352,6 @@ export default {
       this.counter = 0;
       this.content = [];
       this.cart_length = this.$cart.length;
-
       for (let item of this.dfile) {
         let DomainVal = this.$cart.filter(
           (e) => e["Famille Origine"] === item.Code
@@ -365,6 +403,9 @@ export default {
     );
     const chunk = _.chunk(myData, 12);
     this.myData = chunk;
+  },
+  mounted() {
+    this.DomainValues();
   },
 };
 </script>
@@ -481,5 +522,36 @@ li {
 .p-titre > p {
   justify-content: center;
   text-align: center;
+}
+.table {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.head {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.content-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.table_domain {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.table-content {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.suppr {
+  margin-top: -20px;
 }
 </style>
